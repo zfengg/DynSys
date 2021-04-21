@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.1
+# v0.14.2
 
 using Markdown
 using InteractiveUtils
@@ -17,9 +17,11 @@ end
 # environment setup
 begin
 	using DrWatson
-	quickactivate("..")
+	quickactivate(findproject())
 	
 	using Pkg
+	Pkg.instantiate()
+	
 	using PlutoUI
 	using ImageIO, ImageShow, PNGFiles # for images
 	using BenchmarkTools

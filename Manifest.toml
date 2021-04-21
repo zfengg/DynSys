@@ -64,9 +64,9 @@ version = "0.9.38"
 
 [[ChaosTools]]
 deps = ["Combinatorics", "DSP", "DelayEmbeddings", "Distances", "Distributions", "DynamicalSystemsBase", "Entropies", "ForwardDiff", "LinearAlgebra", "LombScargle", "Neighborhood", "Random", "Roots", "SpecialFunctions", "StaticArrays", "Statistics", "StatsBase"]
-git-tree-sha1 = "eb6c2e563d06fd895e7156f44cec52887f371f6d"
+git-tree-sha1 = "a5cfea8d4aa7f305c77df5ca5b0bc3447fbe3870"
 uuid = "608a59af-f2a3-5ad4-90b4-758bdf3122a7"
-version = "1.27.0"
+version = "1.27.1"
 
 [[CheapThreads]]
 deps = ["ArrayInterface", "IfElse", "Requires", "Static", "StrideArraysCore", "ThreadingUtilities", "VectorizationBase"]
@@ -213,9 +213,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Distributions]]
 deps = ["FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns"]
-git-tree-sha1 = "e64debe8cd174cc52d7dd617ebc5492c6f8b698c"
+git-tree-sha1 = "5bc7ddfab4a6a5ac01cce3f5fd0a95dd50645ca4"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.24.15"
+version = "0.24.16"
 
 [[DocStringExtensions]]
 deps = ["LibGit2", "Markdown", "Pkg", "Test"]
@@ -690,10 +690,10 @@ deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
 
 [[Measurements]]
-deps = ["Calculus", "LinearAlgebra", "RecipesBase", "Requires"]
-git-tree-sha1 = "36fc90bfd01438518ed7e438ace8352fc00c6268"
+deps = ["Calculus", "LinearAlgebra", "Printf", "RecipesBase", "Requires"]
+git-tree-sha1 = "31c8c0569b914111c94dd31149265ed47c238c5b"
 uuid = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
-version = "2.5.0"
+version = "2.6.0"
 
 [[Measures]]
 git-tree-sha1 = "e498ddeee6f9fdb4551ce855a46f54dbd900245f"
