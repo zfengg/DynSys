@@ -21,7 +21,8 @@ begin
 	
 	using Pkg
 	using PlutoUI
-	using ImageIO, ImageShow, PNGFiles
+	using ImageIO, ImageShow, PNGFiles # for images
+	using BenchmarkTools
 	using DynamicalSystems
 	using Plots
 	using LabelledArrays
@@ -29,6 +30,11 @@ begin
 	
 	# pyplot()
 end
+
+# ╔═╡ 8306fcca-5e2c-45d4-b77e-cf501dfc6fe9
+html"""
+<img src="https://raw.githubusercontent.com/zfengg/DynSys/master/notebooks/tutorials/Youtube_JuliaLang_tutorial/map_of_ds.png">
+"""
 
 # ╔═╡ cc3c8e12-919f-4d4e-b382-d8182e972d51
 md"# DynamicalSystemBase"
@@ -499,31 +505,16 @@ begin
 	plot(p1,p2,layout=(1,2),legend=false, size=(1000,500))
 end
 
-# ╔═╡ 8398a25c-5093-49da-9487-725510968852
+# ╔═╡ ff4e8b82-9167-4c66-b2e8-c6e3bd2e66da
 md"""
-## 2.C. Lyapunov exponents
 
-### Definition
 Lyapunov exponents measure the exponential separation rate of trajectories that are (initially) close. 
 
 Consider the following picture, where two nearby trajectories are evolved in time:
  
 
 
-![Sketch of the Lyapunov exponent](./tutorials/Youtube_JuliaLang_tutorial/lyapunov.png)
-
-"""
-
-# ╔═╡ 1655f05f-253a-4018-949f-3b27535a440f
-html"""
-<div><img src="./tutorials/Youtube_JuliaLang_tutorial/lyapunov.png" alt="Sketch of the Lyapunov exponent" style="width: 500px;"/> </div>
-	
-"""
-
-# <div notthestyle="position: relative; right: 0; top: 0; z-index: 300;"><iframe src="https://www.youtube.com/embed/DGojI9xcCfg" width=680 height=500  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-
-# ╔═╡ ff4e8b82-9167-4c66-b2e8-c6e3bd2e66da
-md"""
+![Sketch of the Lyapunov exponent](https://raw.githubusercontent.com/zfengg/DynSys/master/notebooks/tutorials/Youtube_JuliaLang_tutorial/lyapunov.png)
 
 * $\lambda$ denotes the "maximum Lyapunov exponent".
 * A $D$-dimensional system has $D$ exponents.
@@ -539,9 +530,169 @@ md"""
 """
 
 # ╔═╡ e1efd072-9940-4698-b08a-0a9c122122ad
+md"""
+### Demonstration
+Before computing Lyapunov exponents, we'll demonstrate the concept of exponential separation using the Henon map that we used before
 
+```math
+\begin{aligned}
+x_{n+1} &= 1 - ax_n^2 + y_n \\
+y_{n+1} &= bx_n
+\end{aligned}
+```
+
+"""
+
+# ╔═╡ c12d0bbe-f302-4095-9ab6-5de656e94912
+df_henon = Systems.henon()
+
+# ╔═╡ 2451e093-ae7a-432d-bac1-3a73225747af
+md"First we'll generate a trajectory for the towel map, `tr1`, from the default initial condition,"
+
+# ╔═╡ 0ea6724d-9661-4c46-8e24-9d8a1d34df0e
+begin
+	df_tr1 = trajectory(df_henon, 100)
+	summary(df_tr1)
+end
+
+# ╔═╡ 1209f14c-7a58-4431-971d-b3dd2d2807f8
+begin
+	u2 = get_state(df_henon) + (1e-9 * ones(dimension(df_henon)) )
+	df_tr2 = trajectory(df_henon, 100, u2)
+	summary(df_tr2)
+end
+
+# ╔═╡ 819f4c85-7b9a-499e-a57e-30569873020e
+md"""
+### Computing the Lyapunov Exponents
+
+`lyapunov` is a function that calculates the maximum Lyapunov exponent for a DynamicalSystem (for a given starting point).
+"""
+
+# ╔═╡ b335c3ed-ea1f-4751-995c-0d780767888b
+λ = lyapunov(henon, 5000) # second argument is time to evolve 
+
+# ╔═╡ aa533bf7-0f73-4697-897a-36ecf7a32cf5
+begin
+	using LinearAlgebra: norm
+	
+	# Plot the x-coordinate of the two trajectories:
+	p1_dfhenon = plot(df_tr1[:, 1], alpha = 0.5, title="Diverging trajectories")
+	plot!(df_tr2[:, 1], alpha = 0.5)
+
+	# Plot their distance in a semilog plot:
+	dist_tr12 = [norm(df_tr1[i] - df_tr2[i]) for i in 1:length(df_tr2)]
+	p2_dfhenon = plot(dist_tr12, yaxis=:log, title="Their distance")
+	plot!(collect(0:50), dist_tr12[1] .* exp.(collect(0:50) .* λ))
+
+	plot(p1_dfhenon, p2_dfhenon, layout=(2,1), legend=false)
+
+end
+
+
+# ╔═╡ df6a2bd4-e479-4c8d-bc00-fe3e869491c1
+md"""
+!!! note
+	This number is _approximately_ the slope of the distance increase!
+
+"""
+
+# ╔═╡ 8c0ec462-7a90-47b0-b133-a86553780101
+md"If you want to get more than one Lyapunov exponents of a system, use `lyapunovs`"
+
+# ╔═╡ f3e77554-8864-49b4-bb3d-a9354a8e07fc
+lyapunovs(henon, 2000)
+
+# ╔═╡ 6750baaa-4809-4fb0-94c0-640323ba500d
+md"""
+### Continuous systems
+
+* All functions that accept a `DynamicalSystem` work with *any* instance of `DynamicalSystem`, regardless of whether it is continuous, discrete, in-place, out-of-place, with Jacobian or whatever.
+* `lyapunov` and `lyapunovs` both accept a `DynamicalSystem`.
+
+This means that they will "just work" if we use the Lorenz system, `lor`.
+
+"""
+
+# ╔═╡ 206478fd-c79d-4782-82ae-139b39777ca2
+begin
+	df_lor = Systems.lorenz()
+	lyapunov(df_lor, 2000.0)
+end
+
+# ╔═╡ 7a06d829-d8e5-4a15-a4cf-fb038ee65b0c
+lyapunovs(df_lor, 2000)
+
+# ╔═╡ fd68e409-9a35-4821-830a-fdce468c82b0
+md"""
+!!! note "Recall"
+	Remember from the Poincare section that for some parameter values the Lorenz system was periodic, for others it was not.
+"""
+
+# ╔═╡ b8dd638c-ebc4-447e-b861-6c845c53f84a
+begin
+ρs = (69.75, 28.0)
+p11 = []
+c = ["red", "blue"]
+for (i, ρ) in enumerate(ρs)
+    set_parameter!(df_lor, 2, ρ)
+    psos1 = poincaresos(lor, (2, 0.0), 2000.0, Ttr = 2000.0)
+    pi = scatter(psos1[:, 1], psos1[:, 3],
+        markersize=0.15, markeralpha = 0.15, markercolor=c[i], 
+        title=string("\\rho", " = $ρ, ", (i != 1 ? "not periodic" : "periodic")))
+    push!(p11, pi)
+end
+
+plot(p11[1],p11[2], layout=(1,2), legend=false, size=(1000,500))
+end
+
+# ╔═╡ 8ca3c940-c26d-495b-9eaf-824fa7cf9930
+md"Seems like the exponent in the first case λ should be equal to zero, and in the second λ should be positive."
+
+# ╔═╡ 52aec3a6-1cb1-44f9-8db5-c997f9cd1ca9
+begin
+	ρs1 = (69.75, 28.0)
+	
+	for (i, ρ) in enumerate(ρs1)
+	    set_parameter!(df_lor, 2, ρ)
+	    λ = lyapunov(df_lor, 2000.0; Ttr = 2000.0)
+	    println("For ρ = $ρ, λ = $λ")
+	end
+end
+
+# ╔═╡ 8ea8a511-50e4-4270-bd53-dcf17e572318
+md"""
+One has to be **very careful** when using functions like `lyapunovs`. They are approximative methods! Naively doing short computations or not using large transient times can lead to wrong results!
+"""
+
+# ╔═╡ 7ab73182-0dde-4897-979a-d08212533b69
+md"""
+### Benchmarks
+
+The Lyapunov exponent computations are quite fast! To benchmark them we can use the `BenchmarkTools` package.
+
+!!! danger "Warning"
+	Check the latest documentation of `lyapunov`
+
+"""
+
+# ╔═╡ 71f9241b-7817-4006-bd0f-b8fee0f03f5e
+diffeq1 = (reltol = 1e-6, abstol = 1e-6) 
+
+# ╔═╡ 4e4939c8-c571-4a13-89de-bba51b8d2cda
+@btime lyapunovs(df_lor, 2000; Ttr = 200, $diffeq1...) # use default solver SimpleATsit5()
+
+# ╔═╡ 0edd455c-4b15-4ee5-b395-e35e7d778064
+@btime lyapunovs(df_lor, 2000; Ttr = 200, $diffeq..., alg = Vern9())
+
+# ╔═╡ 7e70c6e4-56f0-4cb9-a29d-d2e1b0dec3d5
+tow = Systems.towel() # 3D discrete chaotic system
+
+# ╔═╡ 2d8fa5a8-1186-4a4f-ac4b-d2aa38af02d7
+@btime lyapunovs(tow, 2000; Ttr = 200)
 
 # ╔═╡ Cell order:
+# ╟─8306fcca-5e2c-45d4-b77e-cf501dfc6fe9
 # ╟─cc3c8e12-919f-4d4e-b382-d8182e972d51
 # ╠═afcaf632-a1cd-11eb-3356-a5f372c4e13c
 # ╠═931892b0-91a4-482d-9c85-d0387cfe3859
@@ -608,7 +759,29 @@ md"""
 # ╠═faac5d89-5edf-41e7-b598-258ee92377b3
 # ╟─3675071c-d0cf-4b66-97b0-d3577c6e0c8e
 # ╠═82bebf58-638b-4c54-ba62-4c6a58087419
-# ╠═8398a25c-5093-49da-9487-725510968852
-# ╠═1655f05f-253a-4018-949f-3b27535a440f
 # ╟─ff4e8b82-9167-4c66-b2e8-c6e3bd2e66da
-# ╠═e1efd072-9940-4698-b08a-0a9c122122ad
+# ╟─e1efd072-9940-4698-b08a-0a9c122122ad
+# ╠═c12d0bbe-f302-4095-9ab6-5de656e94912
+# ╟─2451e093-ae7a-432d-bac1-3a73225747af
+# ╠═0ea6724d-9661-4c46-8e24-9d8a1d34df0e
+# ╠═1209f14c-7a58-4431-971d-b3dd2d2807f8
+# ╟─aa533bf7-0f73-4697-897a-36ecf7a32cf5
+# ╟─819f4c85-7b9a-499e-a57e-30569873020e
+# ╠═b335c3ed-ea1f-4751-995c-0d780767888b
+# ╟─df6a2bd4-e479-4c8d-bc00-fe3e869491c1
+# ╟─8c0ec462-7a90-47b0-b133-a86553780101
+# ╠═f3e77554-8864-49b4-bb3d-a9354a8e07fc
+# ╟─6750baaa-4809-4fb0-94c0-640323ba500d
+# ╠═206478fd-c79d-4782-82ae-139b39777ca2
+# ╠═7a06d829-d8e5-4a15-a4cf-fb038ee65b0c
+# ╟─fd68e409-9a35-4821-830a-fdce468c82b0
+# ╠═b8dd638c-ebc4-447e-b861-6c845c53f84a
+# ╟─8ca3c940-c26d-495b-9eaf-824fa7cf9930
+# ╠═52aec3a6-1cb1-44f9-8db5-c997f9cd1ca9
+# ╟─8ea8a511-50e4-4270-bd53-dcf17e572318
+# ╟─7ab73182-0dde-4897-979a-d08212533b69
+# ╠═71f9241b-7817-4006-bd0f-b8fee0f03f5e
+# ╠═4e4939c8-c571-4a13-89de-bba51b8d2cda
+# ╠═0edd455c-4b15-4ee5-b395-e35e7d778064
+# ╠═7e70c6e4-56f0-4cb9-a29d-d2e1b0dec3d5
+# ╠═2d8fa5a8-1186-4a4f-ac4b-d2aa38af02d7
