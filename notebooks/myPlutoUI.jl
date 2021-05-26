@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.4
 
 using Markdown
 using InteractiveUtils
@@ -41,6 +41,9 @@ Show(MIME"image/png"(), read("./tutorials/Youtube_JuliaLang_tutorial/lyapunov.pn
 
 # ╔═╡ 9381ace3-98ce-4bb0-8cfe-817bb94d1e46
 Show(MIME"text/html"(), """<h3 style="color:$myColor"> Hello I'm myColor </h3>""")
+
+# ╔═╡ 59bf381b-101b-4581-81c5-857787d4177f
+myColor
 
 # ╔═╡ 999e59d4-a759-4c1f-9941-e8b25e288b17
 @bind myFile_uploads FilePicker()
@@ -86,6 +89,7 @@ dirname(myPath)
 # ╟─44396d0d-5d4a-444f-9cbf-fc4a87a29d78
 # ╠═9381ace3-98ce-4bb0-8cfe-817bb94d1e46
 # ╠═a32ae08a-516a-4274-a4f1-5ec16dca1e91
+# ╠═59bf381b-101b-4581-81c5-857787d4177f
 # ╠═999e59d4-a759-4c1f-9941-e8b25e288b17
 # ╠═428aba2b-08df-4817-a998-2ee7d7d91d3c
 # ╠═1ed8c4e9-46b2-4218-94c7-60a6e2cd5e96
