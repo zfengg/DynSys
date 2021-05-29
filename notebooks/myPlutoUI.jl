@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.4
+# v0.14.5
 
 using Markdown
 using InteractiveUtils
@@ -35,6 +35,12 @@ md"# Collection of PlutoUI elements"
 
 # ╔═╡ 44396d0d-5d4a-444f-9cbf-fc4a87a29d78
 Show(MIME"image/png"(), read("./tutorials/Youtube_JuliaLang_tutorial/lyapunov.png"))
+
+# ╔═╡ 867da94a-b6cd-4a88-aaf8-24600a2644b7
+
+
+# ╔═╡ 32322b4f-b287-434a-87e2-523b4e94ac96
+
 
 # ╔═╡ a32ae08a-516a-4274-a4f1-5ec16dca1e91
 @bind myColor ColorStringPicker(default="#aabbcc")
@@ -81,6 +87,9 @@ basename(myPath)
 # ╔═╡ c2eefcca-2950-4acb-88bf-9a70bb8d9b70
 dirname(myPath)
 
+# ╔═╡ 23284b6d-42fd-4644-ad55-052c67ce9611
+
+
 # ╔═╡ Cell order:
 # ╠═d2f7d8f4-a37c-11eb-1d36-673f2e2c1129
 # ╠═687d118b-4808-4cda-91eb-13bb297170fc
@@ -88,6 +97,8 @@ dirname(myPath)
 # ╟─14f60089-27fc-41da-9ad0-359d7a3f57cb
 # ╟─44396d0d-5d4a-444f-9cbf-fc4a87a29d78
 # ╠═9381ace3-98ce-4bb0-8cfe-817bb94d1e46
+# ╠═867da94a-b6cd-4a88-aaf8-24600a2644b7
+# ╠═32322b4f-b287-434a-87e2-523b4e94ac96
 # ╠═a32ae08a-516a-4274-a4f1-5ec16dca1e91
 # ╠═59bf381b-101b-4581-81c5-857787d4177f
 # ╠═999e59d4-a759-4c1f-9941-e8b25e288b17
@@ -102,3 +113,4 @@ dirname(myPath)
 # ╠═0f9d33cf-5e97-4b7a-91d1-5e20827e47c3
 # ╠═7c78b5bf-a76f-42d7-98bf-d41cf2cb294a
 # ╠═c2eefcca-2950-4acb-88bf-9a70bb8d9b70
+# ╠═23284b6d-42fd-4644-ad55-052c67ce9611
