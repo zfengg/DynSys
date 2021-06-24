@@ -6,4 +6,4 @@ rrange = 1:0.001:4.0
 
 lo = Systems.logistic(0.4; r=rrange[1])
 
-interactive_cobweb(lo, rrange, 5)
+interactive_cobweb(lo, rrange, 1)
